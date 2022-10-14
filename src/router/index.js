@@ -146,9 +146,9 @@ export const constantRoutes = [
 			},
 			{
 				path: 'info/:id',
-				name: '添加课程',
+				name: '编辑课程',
 				component: () => import('@/views/course/info'),
-				meta: { title: '添加课程', icon: 'tree' },
+				meta: { title: '编辑课程', icon: 'tree' },
 				hidden: true
 			},
 			{
