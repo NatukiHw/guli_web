@@ -26,5 +26,5 @@ export default {
 			url: `/eduservice/videos/${videoId}`,
 			method: 'delete'
 		})
-	},
+	}
 }
