@@ -74,7 +74,8 @@ export const constantRoutes = [
 				component: () => import('@/views/tree/index'),
 				meta: { title: 'Tree', icon: 'tree' }
 			}
-		]
+		],
+		hidden: true
 	},
 	{
 		path: '/teacher',
@@ -136,7 +137,7 @@ export const constantRoutes = [
 				path: 'list',
 				name: '课程列表',
 				component: () => import('@/views/course/list'),
-				meta: { title: '课程分类列表', icon: 'table' }
+				meta: { title: '课程列表', icon: 'table' }
 			},
 			{
 				path: 'info',
@@ -178,7 +179,8 @@ export const constantRoutes = [
 				component: () => import('@/views/form/index'),
 				meta: { title: 'Form', icon: 'form' }
 			}
-		]
+		],
+		hidden: true
 	},
 
 	{
@@ -237,7 +239,8 @@ export const constantRoutes = [
 				name: 'Menu2',
 				meta: { title: 'menu2' }
 			}
-		]
+		],
+		hidden: true
 	},
 
 	{
@@ -248,7 +251,8 @@ export const constantRoutes = [
 				path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
 				meta: { title: 'External Link', icon: 'link' }
 			}
-		]
+		],
+		hidden: true
 	},
 
 	// 404 page must be placed at the end !!!

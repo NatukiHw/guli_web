@@ -66,7 +66,19 @@
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="上传视频">
-					<!-- TODO -->
+					<el-upload :on-success="handleVodUploadSuccess" :on-remove="handleVodRemove"
+						:before-remove="beforeVodRemove" :on-exceed="handleUploadExceed" :file-list="fileList"
+						:action="BASE_API+'/eduvod/videos/upload'" :limit="1">
+						<el-button size="small" type="primary">上传视频</el-button>
+						<el-tooltip placement="right-end">
+							<div slot="content">最大支持1G， <br>
+								支持3GP、 ASF、 AVI、 DAT、 DV、 FLV、 F4V、 <br>
+								GIF、 M2T、 M4V、 MJ2、 MJPEG、 MKV、 MOV、 MP4、 <br>
+								MPE、 MPG、 MPEG、 MTS、 OGG、 QT、 RM、 RMVB、 <br>
+								SWF、 TS、 VOB、 WMV、 WEBM 等视频格式上传</div>
+							<i class="el-icon-question" />
+						</el-tooltip>
+					</el-upload>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -79,6 +91,7 @@
 <script>
 	import chapterApi from "@/api/chapter";
 	import videoApi from "@/api/video";
+	import vodApi from "@/api/vod";
 
 	export default {
 		data() {
@@ -90,6 +103,8 @@
 				chapter: {},
 				isVideoEditDialogVisible: false,
 				video: {},
+				fileList: [],
+				BASE_API: process.env.VUE_APP_BASE_API,
 			};
 		},
 		created() {
@@ -99,6 +114,28 @@
 			}
 		},
 		methods: {
+			handleVodUploadSuccess(response, file, fileList) {
+				this.video.videoSourceId = response.data.videoId;
+				this.video.videoOriginalName = file.name;
+			},
+			handleUploadExceed(files, fileList) {
+				this.$message.warning("想要重新上传视频，请先删除已上传的视频");
+			},
+			beforeVodRemove(file, fileList) {
+				return this.$confirm(`确定移除视频[${file.name}]吗?`);
+			},
+			handleVodRemove(file, fileList) {
+				vodApi.remove(this.video.videoSourceId).then((resp) => {
+					if(resp.success) {
+						this.$message.success("视频删除成功");
+						this.video.videoSourceId = '';
+						this.video.videoOriginalName = '';
+						this.fileList = [];
+					} else {
+						this.$message.error("视频删除失败");
+					}
+				});
+			},
 			openChapterEditDialog(chapterId) {
 				this.clearChapterEditDialog();
 				this.isChapterEditDialogVisible = true;
@@ -133,11 +170,12 @@
 			},
 			clearVideoEditDialog() {
 				this.video = {
-					title: '',
+					title: "",
 					sort: 0,
 					isFree: 1,
-					videoSourceId: ''
+					videoSourceId: "",
 				};
+				this.fileList = [];
 			},
 			saveChapter() {
 				let api = chapterApi.add;
@@ -261,6 +299,9 @@
 				videoApi.getOne(this.video.id).then((resp) => {
 					if (resp.success && resp.data.video) {
 						this.video = resp.data.video;
+						if(resp.data.video.videoOriginalName) {
+							this.fileList = [{'name': resp.data.video.videoOriginalName}]
+						}
 					}
 				});
 			},
